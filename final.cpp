@@ -1,9 +1,6 @@
 #include <iostream>
 #include <string>
-#include <ctime>
 #include <windows.h>
-#include <fstream>
-#include <sstream>
 
 #include "studentmanager.h"
 #include "course.h"
@@ -18,26 +15,6 @@ int main()
     StudentManager manager;
     int choice;
     string id, name, password, course;
-
-    ifstream inFile("students.txt");
-    string line;
-
-    while (getline(inFile, line)) {
-        stringstream ss(line);
-        string id, name, password;
-
-        getline(ss, id, ',');
-        getline(ss, name, ',');
-        getline(ss, password, ',');
-
-        Student s;
-        s.setid(id);
-        s.setname(name);
-        s.setpassword(password);
-
-        manager.addNewStudent(s);
-    }
-    inFile.close();
 
     while (true)
     {
@@ -74,16 +51,6 @@ int main()
                 if (manager.addNewStudent(newStudent)) {
                     SetConsoleTextAttribute(hConsole, 10); 
                     cout << "Student added successfully.\n";
-
-                    ofstream outFile("students.txt", ios::app);
-                    if (outFile.is_open()) {
-                        outFile << id << "," << name << "," << password << "\n";
-                        outFile.close();
-                    } else {
-                        SetConsoleTextAttribute(hConsole, 12); 
-                        cout << "Error: Couldn't write to file.\n";
-                    }
-
                 } else {
                     SetConsoleTextAttribute(hConsole, 12); 
                     cout << "Failed to add student (maybe already exists).\n";
@@ -169,8 +136,6 @@ int main()
             if (manager.removeStudentById(id)) {
                 SetConsoleTextAttribute(hConsole, 10);
                 cout << "Student deleted successfully.\n";
-
-
             } else {
                 SetConsoleTextAttribute(hConsole, 12);
                 cout << "Student Not Found.\n";
