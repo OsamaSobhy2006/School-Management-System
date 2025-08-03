@@ -5,6 +5,8 @@
 #include "studentmanager.h"
 #include "course.h"
 #include "student.h"
+#include "authmanager.h"
+#include "user.h"
 
 using namespace std;
 
@@ -12,20 +14,59 @@ int main()
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    AuthManager auth;
     StudentManager manager;
+
+    int loginChoice;
+    string id, password;
+
+    bool isLoggedIn = false;
+
+    while (!isLoggedIn) {
+        SetConsoleTextAttribute(hConsole, 11);
+        cout << "\n====== Authentication ======\n";
+        cout << "1 - Register\n";
+        cout << "2 - Login\n";
+        cout << "Choose: ";
+        cin >> loginChoice;
+
+        cout << "Enter Student ID: ";
+        cin >> id;
+
+        cout << "Enter Password: ";
+        cin >> password;
+
+        if (loginChoice == 1) {
+            if (auth.registerUser(id, password)) {
+                SetConsoleTextAttribute(hConsole, 10);
+                cout << "Registration successful. You can now login.\n";
+            }
+        } else if (loginChoice == 2) {
+            if (auth.loginUser(id, password)) {
+                SetConsoleTextAttribute(hConsole, 10);
+                cout << "Login successful.\n";
+                isLoggedIn = true;
+            } else {
+                SetConsoleTextAttribute(hConsole, 12);
+                cout << "Invalid credentials. Try again.\n";
+            }
+        }
+    }
+
     int choice;
-    string id, name, password, course;
+    string name, course;
 
     while (true)
     {
-        SetConsoleTextAttribute(hConsole, 11); 
+        SetConsoleTextAttribute(hConsole, 11);
         cout << "\n====== School Management System ======\n";
-        cout << "1 - Add Student: " << "\n";
-        cout << "2 - Enroll in Course: " << "\n";
-        cout << "3 - Remove Course: " << "\n";
-        cout << "4 - Show Student info: " << "\n";
-        cout << "5 - Delete Student: " << "\n";
-        cout << "6 - Exit: " << "\n";
+        cout << "1 - Add Student\n";
+        cout << "2 - Enroll in Course\n";
+        cout << "3 - Remove Course\n";
+        cout << "4 - Show Student info\n";
+        cout << "5 - Delete Student\n";
+        cout << "6 - Exit\n";
+        cout << "Choose: ";
         cin >> choice;
 
         switch (choice)
@@ -49,10 +90,10 @@ int main()
                 newStudent.setpassword(password);
 
                 if (manager.addNewStudent(newStudent)) {
-                    SetConsoleTextAttribute(hConsole, 10); 
+                    SetConsoleTextAttribute(hConsole, 10);
                     cout << "Student added successfully.\n";
                 } else {
-                    SetConsoleTextAttribute(hConsole, 12); 
+                    SetConsoleTextAttribute(hConsole, 12);
                     cout << "Failed to add student (maybe already exists).\n";
                 }
             }
